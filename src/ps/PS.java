@@ -56,6 +56,7 @@ public class PS {
                     break;
                 case 3:
                     // Headliners
+                    getHeadliners(scanner);
                     break;
                 case 4:
                     // Price tickets
@@ -149,4 +150,27 @@ public class PS {
             System.err.println("Error writing the file: " + e.getMessage());
         }
     }
+
+    private static void getHeadliners(Scanner scanner) {
+        System.out.print("Enter year: ");
+        Short year = scanner.nextShort();
+        scanner.nextLine();
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/ps/headliners" + year + ".txt"))) {
+            bw.write("HEADLINERS\n");
+            for (PS festival : festivals) {
+                if (festival.year == year) {
+                    for (String artist : festival.headLiners.split(",")) {
+                        bw.write(artist.trim() + "\n");
+                    }
+                    break;
+                }
+            }
+            System.out.println("File headliners" + year + ".txt has been created.");
+        } catch (IOException e) {
+            System.err.println("Error writing the file: " + e.getMessage());
+        }
+    }
+
+
 }
