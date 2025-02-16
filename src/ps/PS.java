@@ -43,6 +43,7 @@ public class PS {
         do {
             menu();
             option = scanner.nextInt();
+            scanner.nextLine();
 
             switch (option) {
                 case 1:
@@ -51,6 +52,7 @@ public class PS {
                     break;
                 case 2:
                     // Search artist
+                    searchArtist(scanner);
                     break;
                 case 3:
                     // Headliners
@@ -76,7 +78,7 @@ public class PS {
         System.out.println("3. HEADLINERS");
         System.out.println("4. PRICE TICKETS");
         System.out.println("0. LEAVE");
-        System.out.print("OPTION (0 .. 4) ? CHOOSE MENU OPTION");
+        System.out.print("OPTION (0 .. 4) ? CHOOSE MENU OPTION: ");
     }
 
     private static void loadFile(String filename) {
@@ -119,9 +121,7 @@ public class PS {
 
     private static void findTotals() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/ps/totals.txt"))) {
-
             bw.write("EDITION;YEAR;DATE;ASSISTANTS;TICKETSDAY;PRICEDAY;TICKETSFULLFEST;PRICEFULLFEST;TICKETSVIPS;PRICEVIP;TOTALTICKETS;EARNINGS\n");
-
             for (PS festival : festivals) {
                 bw.write(festival.edition + ";" + festival.year + ";" + festival.date + ";" + festival.assistants + ";" +
                          festival.ticketsDay + ";" + festival.priceDay + ";" + festival.ticketsFullFest + ";" + festival.priceFullFest + ";" +
@@ -130,6 +130,23 @@ public class PS {
             System.out.println("File totals.txt has been created.");
         } catch (IOException e) {
             System.err.println("Error writing file: " + e.getMessage());
+        }
+    }
+
+    private static void searchArtist(Scanner scanner) {
+        System.out.print("Enter artist: ");
+        String artist = scanner.nextLine().toLowerCase();
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/ps/artist.txt"))) {
+            bw.write("EDITION;YEAR;HEADLINERS\n");
+            for (PS festival : festivals) {
+                if (festival.headLiners.toLowerCase().contains(artist)) {
+                    bw.write(festival.edition + ";" + festival.year + ";" + festival.headLiners + "\n");
+                }
+            }
+            System.out.println("File artist.txt has been created.");
+        } catch (IOException e) {
+            System.err.println("Error writing the file: " + e.getMessage());
         }
     }
 }
