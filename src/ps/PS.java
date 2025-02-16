@@ -19,7 +19,7 @@ public class PS {
     float priceVip;
     String headLiners;
 
-    private static List<PS> festivals = new ArrayList<>();
+    private static final List<PS> festivals = new ArrayList<>();
 
     public PS(String edition, short year, String date, int assistants, int ticketsDay, float priceDay, int ticketsFullFest, float priceFullFest, int ticketsVip, float priceVip, String headLiners) {
         this.edition = edition;
@@ -60,6 +60,7 @@ public class PS {
                     break;
                 case 4:
                     // Price tickets
+                    getPriceTickets(scanner);
                     break;
                 case 0:
                     // Leave
@@ -172,5 +173,22 @@ public class PS {
         }
     }
 
+    private static void getPriceTickets(Scanner scanner) {
+        System.out.print("Enter year: ");
+        short year = scanner.nextShort();
+        scanner.nextLine();
 
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/ps/prices" + year + ".txt"))) {
+            bw.write("EDITION;YEAR;PRICEDAY;PRICEFULLFEST;PRICEVIP\n");
+            for (PS festival : festivals) {
+                if (festival.year == year) {
+                    bw.write(festival.edition + ";" + festival.year + ";" + festival.priceDay + ";" + festival.priceFullFest + ";" + festival.priceVip);
+                    break;
+                }
+            }
+            System.out.println("File prices" + year + ".txt has been created.");
+        } catch (IOException e) {
+            System.err.println("Error writing the file: " + e.getMessage());
+        }
+    }
 }
