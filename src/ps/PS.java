@@ -153,7 +153,7 @@ public class PS {
 
     private static void getHeadliners(Scanner scanner) {
         System.out.print("Enter year: ");
-        Short year = scanner.nextShort();
+        short year = scanner.nextShort();
         scanner.nextLine();
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/ps/headliners" + year + ".txt"))) {
