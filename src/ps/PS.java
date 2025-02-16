@@ -1,10 +1,9 @@
 package ps;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class PS {
 
@@ -36,16 +35,38 @@ public class PS {
         this.headLiners = headLiners;
     }
 
-    public int getTotalTickets() {
-        return ticketsDay + ticketsFullFest + ticketsVip;
-    }
-
-    public float getEarnings() {
-        return ticketsDay * priceDay + ticketsFullFest * priceFullFest + ticketsVip * priceVip;
-    }
-
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         loadFile("src/ps/primaverasound-2.txt");
+        int option;
+
+        do {
+            menu();
+            option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    // Find totals
+                    findTotals();
+                    break;
+                case 2:
+                    // Search artist
+                    break;
+                case 3:
+                    // Headliners
+                    break;
+                case 4:
+                    // Price tickets
+                    break;
+                case 0:
+                    // Leave
+                    break;
+                default:
+                    System.out.println("Invalid option, try again.");
+            }
+        } while (option != 0);
+
+        scanner.close();
     }
 
     private static void menu() {
@@ -55,7 +76,7 @@ public class PS {
         System.out.println("3. HEADLINERS");
         System.out.println("4. PRICE TICKETS");
         System.out.println("0. LEAVE");
-        System.out.print("OPTION (0 .. 4) ? ");
+        System.out.print("OPTION (0 .. 4) ? CHOOSE MENU OPTION");
     }
 
     private static void loadFile(String filename) {
@@ -85,6 +106,30 @@ public class PS {
             }
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
+        }
+    }
+
+    private int getTotalTickets() {
+        return ticketsDay + ticketsFullFest + ticketsVip;
+    }
+
+    private float getEarnings() {
+        return ticketsDay * priceDay + ticketsFullFest * priceFullFest + ticketsVip * priceVip;
+    }
+
+    private static void findTotals() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/ps/totals.txt"))) {
+
+            bw.write("EDITION;YEAR;DATE;ASSISTANTS;TICKETSDAY;PRICEDAY;TICKETSFULLFEST;PRICEFULLFEST;TICKETSVIPS;PRICEVIP;TOTALTICKETS;EARNINGS\n");
+
+            for (PS festival : festivals) {
+                bw.write(festival.edition + ";" + festival.year + ";" + festival.date + ";" + festival.assistants + ";" +
+                         festival.ticketsDay + ";" + festival.priceDay + ";" + festival.ticketsFullFest + ";" + festival.priceFullFest + ";" +
+                         festival.ticketsVip + ";" + festival.priceVip + ";" + festival.getTotalTickets() + ";" + festival.getEarnings() + "\n");
+            }
+            System.out.println("File totals.txt has been created.");
+        } catch (IOException e) {
+            System.err.println("Error writing file: " + e.getMessage());
         }
     }
 }
